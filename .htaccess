@@ -1,0 +1,8 @@
+RewriteEngine on
+AddDefaultCharset utf-8
+
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+RewriteRule !.(js|html) index.html?%{QUERY_STRING} [L]

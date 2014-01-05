@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<script>
+			var q = Math.random();
+			 function require(url) {
+			 	if(!url.length) return;
+			    var script = document.createElement('script');
+				script.src = url.shift() + '?' + q;
+				document.getElementsByTagName('head')[0].appendChild(script);
+				require(url);
+			}
+			require(['/js/dom.js', '/js/common.js','/js/config.js','/js/kernel.js']);
+		</script>
+		<title>Test</title>
+	</head>
+	<body>
+
+	</body>
+</html>
