@@ -126,16 +126,16 @@ function clone(obj){
     return temp;
 }
 
- function include(url, args) {
+ function include(args) {
  	args || (args = {})	;
  	 setTimeout(function(){
  
-		 	if(typeof url == 'string') {
-		 		var join = (url.search('\\?') >= 0) ? '&' : '?';
+		 	if(typeof args.load == 'string') {
+		 		var join = (args.load.search('\\?') >= 0) ? '&' : '?';
 				join += 'v=' + config.version; 
 
 		        var script = document.createElement('script');
-		        script.src = url + join;
+		        script.src = args.load + join;
 		        document.getElementsByTagName('head')[0].appendChild(script);
 
 		        args.error && (script.onerror = function() {
@@ -145,18 +145,18 @@ function clone(obj){
 		        	args.success();
 		       	}) :  true;
 		    }
-		    else if(typeof url == 'object' || typeof url == 'array') {
-		    	var urlList = clone(url);
+		    else if(typeof args.load == 'object' || typeof args.load == 'array') {
+		    	var urlList = clone(args.load);
 		    	var onScriptLoad = function() {
 		    		if(!urlList.length)
 		    			args.success && args.success();
 		    	};
 		    	if(args.success)var i = 0;
-		    	for(var link in url) if(typeof url[link] == 'string') {
-			 		var join = (url[link].search('\\?') >= 0) ? '&' : '?';
+		    	for(var link in args.load) if(typeof args.load[link] == 'string') {
+			 		var join = (args.load[link].search('\\?') >= 0) ? '&' : '?';
 					join += 'v=' + config.version;
 		    		var script = document.createElement('script');
-			        script.src = url[link] + join;
+			        script.src = args.load[link] + join;
 			        document.getElementsByTagName('head')[0].appendChild(script);
 			        if(args.success) {
 		    			var c = i;

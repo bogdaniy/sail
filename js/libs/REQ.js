@@ -31,6 +31,7 @@ app.libs.REQ = {
 	},
 	get:function(path, callback, not_found) {
 		var join = (path.search('\\?') >= 0) ? '&' : '?';
+		join += 'v=' + config.version;
 		var xhr = new XMLHttpRequest();
 		xhr.open('GET', path + join, true);
 		xhr.onreadystatechange = function() {
