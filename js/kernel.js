@@ -1,6 +1,7 @@
 app = {
 	//vars
 	libs:{},
+	ctrl : {},
 	init : function() {
 		config.debug || (window.onerror = function(err){
 			setTimeout(function(err){
@@ -12,11 +13,13 @@ app = {
 		for(var libName in config.libs) if(typeof libName == 'string') {
 			config.libs[libName] = config.libsPath + config.libs[libName] + '.js';
 		}
-
-		include(config.libs, function(){
-			app.libs.SYSTEM.checkVersion();
-			config.needAuth && app.libs.SYSTEM.checkAuth();
-			app.libs.MODULES.loadIndex();
+		include(config.libsPath + config.formControllerName + '.js');
+		include(config.libs, {
+			success : function(){
+				app.libs.SYSTEM.checkVersion();
+				config.needAuth && app.libs.SYSTEM.checkAuth();
+				app.libs.MODULES.loadIndex();
+			}
 			
 		});
 	},

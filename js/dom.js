@@ -42,8 +42,12 @@ function dom_obj(obj){
 	}
 	this.html = function(data){
 		var el = this.getObj();
-		data ? el.innerHTML = data : el.innerHTML;
-		return this;
+		if(data) {
+			el.innerHTML = data;
+			return this;
+		}
+		el.innerHTML.__proto__ = this;
+		return el.innerHTML;
 	}
 	
 }

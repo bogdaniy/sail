@@ -126,7 +126,8 @@ function clone(obj){
     return temp;
 }
 
- function include(url, func, error) {
+ function include(url, args) {
+ 	args || (args = {})	;
  	 setTimeout(function(){
  
 		 	if(typeof url == 'string') {
@@ -137,35 +138,39 @@ function clone(obj){
 		        script.src = url + join;
 		        document.getElementsByTagName('head')[0].appendChild(script);
 
-		        error && (script.onerror = function() {
-		        	error();
+		        args.error && (script.onerror = function() {
+		        	args.error();
 		        });
-		        return func ? (script.onload = function() {
-		        	func();
+		        return args.success ? (script.onload = function() {
+		        	args.success();
 		       	}) :  true;
 		    }
 		    else if(typeof url == 'object' || typeof url == 'array') {
 		    	var urlList = clone(url);
 		    	var onScriptLoad = function() {
 		    		if(!urlList.length)
-		    			func && func();
+		    			args.success && args.success();
 		    	};
-		    	if(func)var i = 0;
+		    	if(args.success)var i = 0;
 		    	for(var link in url) if(typeof url[link] == 'string') {
 			 		var join = (url[link].search('\\?') >= 0) ? '&' : '?';
 					join += 'v=' + config.version;
 		    		var script = document.createElement('script');
 			        script.src = url[link] + join;
 			        document.getElementsByTagName('head')[0].appendChild(script);
-			        if(func) {
+			        if(args.success) {
 		    			var c = i;
 		    			script.onload = function(c) {
 		    				urlList.splice(c, 1);
 		    				onScriptLoad();
 		    			}
+		    		}
+		    		script.onerror = function() {
+		    			args.error && args.error();
+		    			return true;
+		    		}
 		    			i++;
-			        }
-		    	}
+			    }
 		    }
 		}, 0);
 	return true;

@@ -2,26 +2,51 @@ app.libs.MODULES = {
 	list : {},
 	web : {},
 	templates : {},
+	current : {},
+	currentName : '',
+	currentAction : '',
+	domСopies : {},
 	open : function(name) {
+		//For returnables modules sleep previous[type=1]
+		var isContainer = Boolean(ge('container'));
+		if(this.current.length && this.current.type && isContainer) {
+			this.domСopies[this.currentName] || this.domСopies[this.currentName] = {};
+			this.domСopies[this.currentName][this.currentAction] = $('#container').html();
+			this.current.onSleep(this.currentAction);
+		}
+		//For returnables modules wake up
+		if(isContainer && this.web[name] && this.web[name].type && this.domСopies[name] && this.domСopies[name][app.libs.URI.action]) {
+			$('#container').html(this.domСopies[name][app.libs.URI.action]);
+			this.web[name].onWake(app.libs.URI.action)
+		}
+		//For usual modules
+		if(isContainer && !this.current.type) {
+			this.web[this.currentName].onClose(this.currentAction);
+		}
+
+
 		var mname = name;
 		name = config.modulesPath + name + '.js';
 		var _this = this;
 
-		if(!app.libs.MODULES.list[name])
-			include(name, function() {
-				_this.onLoad(mname);
-			} , function() {
-				_this.onError(mname);
+		if(!this.list[name])
+			include(name, {
+				success : function() {
+					_this.onLoad(mname);
+				}, 
+				error : function() {
+					_this.onError(mname);
+				}
 			});
 		else
 			this.load(name)
 	},
 	onLoad : function(name) {
-		app.libs.MODULES.list[name].__proto__ = this.byDefault;
+		this.list[name].__proto__ = this.byDefault;
 		this.load(name);
 	},
 	onError : function(name) {
-		app.libs.MODULES.list[name] = this.byDefault;
+		this.list[name] = this.byDefault;
 		this.load(name);
 	},
 	byDefault : {
@@ -57,10 +82,12 @@ app.libs.MODULES = {
 			app.pageLoad(config.authPage);
 		}
 
-		app.libs.MODULES.web[name] = clone(app.libs.MODULES.list[name]);
-		
+		this.web[name] = clone(this.list[name]);
+		this.current = this.web[name];
+		this.currentName = name;
 		!app.libs.URI.action && (app.libs.URI.action = 'main');
-		app.libs.MODULES.web[name].onLoad(app.libs.URI.action,{
+		this.currentAction = app.libs.URI.action;
+		this.web[name].onLoad(app.libs.URI.action,{
 		 	load : function(datum, hndlr) {
 				_this.template(datum, hndlr);
 			},
@@ -110,7 +137,7 @@ app.libs.MODULES = {
 		return;
 	},
 	getName : function(str) {
-		return str.replace(new RegExp("/",'g'),"_")
+		return str.replace(new RegExp("/",'g'),"_");
 	}
 
 
