@@ -1,4 +1,4 @@
 sail
 ====
 
-The the fastest js engine ever.
+The the fastest js engine ever

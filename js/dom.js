@@ -32,15 +32,12 @@ function dom_obj(obj){
 		
 	};
 	this.css = function(rule, value){
-		
 		if(!obj)return this;
-		setTimeout(function(){
-			if(typeof rule == 'object')
-				for(var i in rule)
-					cssSet(this.obj, i, rule[i]);
-			else
-				return cssSet(this.obj, rule, value);
-		}, 0);
+		if(typeof rule == 'object')
+			for(var i in rule)
+				cssSet(this.obj, i, rule[i]);
+		else
+			return cssSet(this.obj, rule, value);
 		return this;
 	}
 	this.html = function(data){

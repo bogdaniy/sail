@@ -4,7 +4,7 @@ config = {
 	apiAddress : '/api/',
 	debug : true,
 	cache : false,
-	version : Math.random(),
+	version : 5,
 	libsPath : '/js/libs/',
 	modulesPath : '/js/modules/',
 	templatesPath : '/templates/',
