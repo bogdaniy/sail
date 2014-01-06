@@ -4,9 +4,9 @@ app.libs.SYSTEM = {
 		user_id : '',
 		checkVersion : function() {
 			setTimeout(function() {
-				if(localStorage.getItem('version').toString() !== config.version.toString()) {
+				if(localStorage.getItem('version') !== config.version.toString()) {
 					localStorage.clear();
-					localStorage.setItem('version', config.version)
+					localStorage.setItem('version', config.version.toString());
 				}
 			}, 0);
 			return;
