@@ -13,13 +13,14 @@ app = {
 		for(var libName in config.libs) if(typeof libName == 'string') {
 			config.libs[libName] = config.libsPath + config.libs[libName] + '.js';
 		}
-		include({
-			load : config.libs, 
-			success  : function(){
+		include(config.libsPath + config.formControllerName + '.js');
+		include(config.libs, {
+			success : function(){
 				app.libs.SYSTEM.checkVersion();
 				config.needAuth && app.libs.SYSTEM.checkAuth();
 				app.libs.MODULES.loadIndex();
-			}	
+			}
+			
 		});
 	},
 	pageLoad : function(href) {

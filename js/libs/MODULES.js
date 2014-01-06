@@ -9,9 +9,8 @@ app.libs.MODULES = {
 	open : function(name) {
 		//For returnables modules sleep previous[type=1]
 		var isContainer = Boolean(ge('container'));
-		console.log(this.current)
-		if(this.current && this.current.type && isContainer) {
-			this.domСopies[this.currentName] || (this.domСopies[this.currentName] = {});
+		if(this.current.length && this.current.type && isContainer) {
+			this.domСopies[this.currentName] || this.domСopies[this.currentName] = {};
 			this.domСopies[this.currentName][this.currentAction] = $('#container').html();
 			this.current.onSleep(this.currentAction);
 		}
@@ -19,15 +18,10 @@ app.libs.MODULES = {
 		if(isContainer && this.web[name] && this.web[name].type && this.domСopies[name] && this.domСopies[name][app.libs.URI.action]) {
 			$('#container').html(this.domСopies[name][app.libs.URI.action]);
 			this.web[name].onWake(app.libs.URI.action)
-			return;
 		}
 		//For usual modules
 		if(isContainer && !this.current.type) {
-			var hndlr = this.web[this.currentName].onClose(this.currentAction);
-			if(!hndlr) {
-			
-				return false;
-			}
+			this.web[this.currentName].onClose(this.currentAction);
 		}
 
 
@@ -35,9 +29,8 @@ app.libs.MODULES = {
 		name = config.modulesPath + name + '.js';
 		var _this = this;
 
-		if(!this.list[mname])
-			include({
-				load : name,
+		if(!this.list[name])
+			include(name, {
 				success : function() {
 					_this.onLoad(mname);
 				}, 
@@ -46,7 +39,7 @@ app.libs.MODULES = {
 				}
 			});
 		else
-			this.load(mname)
+			this.load(name)
 	},
 	onLoad : function(name) {
 		this.list[name].__proto__ = this.byDefault;
@@ -60,7 +53,6 @@ app.libs.MODULES = {
 		type:0,
 		need_auth : false,
 		onLoad : function(action, page, hndlr) {
-
 			if(this.load && this.load[action])
 				return this.load[action](page, hndlr);
 			hndlr.actionTemplate = true;
@@ -68,7 +60,6 @@ app.libs.MODULES = {
 
 		},
 		onReady : function(action) {
-			console.log(this, action)
 			if(this.ready && this.ready[action])
 				this.ready[action]();
 		},
@@ -77,14 +68,12 @@ app.libs.MODULES = {
 				this.wake[action]();
 		},
 		onSleep : function(action) {
-			if(this.sleep && this.sleep[action])
-				this.sleep[action]();
+			if(this.wake && this.wake[action])
+				this.wake[action]();
 		},
 		onClose : function(action) {
-
 			if(this.close && this.close[action])
-				return this.close[action]();
-			return true;
+				this.close[action]();
 		}
 	},
 	load : function(name) {
@@ -98,7 +87,6 @@ app.libs.MODULES = {
 		this.currentName = name;
 		!app.libs.URI.action && (app.libs.URI.action = 'main');
 		this.currentAction = app.libs.URI.action;
-		console.log(name)
 		this.web[name].onLoad(app.libs.URI.action,{
 		 	load : function(datum, hndlr) {
 				_this.template(datum, hndlr);
@@ -142,12 +130,10 @@ app.libs.MODULES = {
 	render : function(execute, datum) {
 		if(!ge('container')) {
 			$('body').html(execute(datum));
-			this.current.onReady(this.currentAction);
 			app.prepareforBrowser();
 			return;
 		}
 		$('#container').html(execute(datum));
-		this.current.onReady(this.currentAction);
 		return;
 	},
 	getName : function(str) {
